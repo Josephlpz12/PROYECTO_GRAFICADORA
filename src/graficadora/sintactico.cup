@@ -1,0 +1,155 @@
+package graficadora;
+
+import java_cup.runtime.Symbol;
+
+parser code
+{:
+    
+    @Override
+    public void syntax_error(Symbol s){
+        System.out.println("Error en simbolo: "+s.value);
+    }
+
+:}
+
+action code {:
+    
+:}
+
+
+terminal String cuadrado,parAbre,parCierra,entero,coma,pcoma,rojo,azul,celeste,verde,negro,morado,anaranjado,rosado,cafe,amarillo,gris,
+rellena,contorno,rectangulo,linea,trianguloRectangulo,poligono,estrella,ovalo,circulo,pacman;
+
+non terminal String I, L, O, C, T; 
+non terminal int[] N;
+
+start with I;
+
+I ::= L;
+
+L ::= O L 
+    | O ;
+
+O ::= cuadrado parAbre entero:x coma entero:y coma entero:l coma C:c coma T:t parCierra pcoma {:
+    System.out.println("X: "+ x +", Y:" +y +", Lado:" + l +", Color: "+c +", Tipo: "+ t);
+    int xi = Integer.parseInt(x);
+    int yi = Integer.parseInt(y);
+    int li = Integer.parseInt(l);
+    Graficar.graficarCuadrado(xi,yi,li,c,t);
+:}
+
+  | linea parAbre entero:x1 coma entero:y1 coma entero:x2 coma entero:y2 coma C:c parCierra pcoma {:
+    System.out.println("X1: " + x1 + ", Y1: " + y1 + ", X2: " + x2 + ", Y2: " + y2 + ", Color: " + c);
+    int xi = Integer.parseInt(x1);
+    int yi = Integer.parseInt(y1);
+    int xi2 = Integer.parseInt(x2);
+    int yi2 = Integer.parseInt(y2);
+    Graficar.graficarLinea(xi,yi,xi2,yi2,c); 
+:}
+
+| rectangulo parAbre entero:x coma entero:y coma entero:b coma entero:a coma C:c coma T:t parCierra pcoma {:
+    System.out.println("X: "+ x +", Y:" +y +", Base:" + b +", Altura:" + a +", Color: "+c +", Tipo: "+ t);
+    int xi = Integer.parseInt(x);
+    int yi = Integer.parseInt(y);
+    int bi = Integer.parseInt(b);
+    int ai = Integer.parseInt(a);
+    Graficar.graficarRectangulo(xi,yi,bi,ai,c,t);
+:}
+
+| trianguloRectangulo parAbre entero:x coma entero:y coma entero:b coma entero:a coma C:c coma T:t parCierra pcoma {:
+    System.out.println("X: "+ x +", Y:" +y +", Base:" + b +", Altura:" + a +", Color: "+c +", Tipo: "+ t);
+    int xi = Integer.parseInt(x);
+    int yi = Integer.parseInt(y);
+    int bi = Integer.parseInt(b);
+    int ai = Integer.parseInt(a);
+    Graficar.graficarTrianguloRectangulo(xi,yi,bi,ai,c,t);
+:}
+
+| circulo parAbre entero:x coma entero:y coma entero:r coma C:c coma T:t parCierra pcoma {:
+    System.out.println("X: "+ x +", Y:" +y +", Radio:" + r + ", Color: "+ c +", Tipo: "+ t);
+    int xi = Integer.parseInt(x);
+    int yi = Integer.parseInt(y);
+    int ri = Integer.parseInt(r);
+    Graficar.graficarCirculo(xi,yi,ri,c,t);
+:}
+
+| ovalo parAbre entero:x coma entero:y coma entero:ejex coma entero:ejey coma C:c coma T:t parCierra pcoma {:
+    System.out.println("X: "+ x +", Y:" +y +", Ejex:" + ejex + ", Ejey:" + ejey + ", Color: "+ c +", Tipo: "+ t);
+    int xi = Integer.parseInt(x);
+    int yi = Integer.parseInt(y);
+    int jx = Integer.parseInt(ejex);
+    int jy = Integer.parseInt(ejey);
+    Graficar.graficarOvalo(xi,yi,jx,jy,c,t);
+:}
+
+| estrella parAbre entero:x coma entero:y coma entero:p coma C:c coma T:t parCierra pcoma {:
+    System.out.println("X: "+ x +", Y:" +y +", Porcentaje:" + p + ", Color: "+ c +", Tipo: "+ t);
+    int xi = Integer.parseInt(x);
+    int yi = Integer.parseInt(y);
+    int px = Integer.parseInt(p);
+    Graficar.graficarEstrella(xi,yi,px,c,t);
+:}
+
+| poligono parAbre N:coordenadas coma C:c coma T:t parCierra pcoma {:
+
+    StringBuilder puntos = new StringBuilder();
+    puntos.append("Puntos: ");
+    
+    for (int i = 0; i < coordenadas.length; i++) {
+        puntos.append(coordenadas[i]);
+        if (i < coordenadas.length - 1) {
+            puntos.append(", ");
+        }
+    }
+    
+    System.out.println(puntos.toString() + ", Color: " + c + ", Tipo: " + t);
+
+    int [] xPuntos = new int[coordenadas.length /2];
+    int [] yPuntos = new int[coordenadas.length /2];
+
+    for  (int i = 0; i < coordenadas.length; i += 2){
+        xPuntos[i / 2] = coordenadas[i];
+        yPuntos[i / 2] = coordenadas[i + 1];
+    }
+    Graficar.graficarPoligono(xPuntos, yPuntos, xPuntos.length, c ,t);
+:}
+
+| pacman parAbre entero:x coma entero:y coma entero:p coma C:c coma T:t parCierra pcoma {:
+    System.out.println("X: "+ x +", Y:" +y +", Porcentaje:" + p + ", Color: "+ c +", Tipo: "+ t);
+    int xi = Integer.parseInt(x);
+    int yi = Integer.parseInt(y);
+    int px = Integer.parseInt(p);
+    Graficar.graficarPacman(xi,yi,px,c,t);
+:};
+
+C ::= rojo:r {: RESULT = r; :}
+      |azul:a {: RESULT = a; :}
+      |celeste:c {: RESULT = c; :}
+      |verde:v {: RESULT = v; :}
+      |negro:n {: RESULT = n; :}
+      |morado:m {: RESULT = m; :}
+      |anaranjado:an {: RESULT = an; :}
+      |rosado:ro {: RESULT = ro; :}
+      |amarillo:am {: RESULT = am; :}
+      |gris:g {: RESULT = g; :}
+      |cafe:cf {: RESULT = cf; :};
+
+T ::= rellena:r {: RESULT = r; :}
+    |contorno:c {: RESULT = c; :};
+
+
+N ::= entero:x coma entero:y {:
+    int x1 = Integer.parseInt(x);
+    int y1 = Integer.parseInt(y);
+    RESULT = new int[] {x1,y1};
+:}
+
+| N:lista2 coma entero:x coma entero:y {:
+    int xi = Integer.parseInt(x);
+    int yi = Integer.parseInt(y);
+    int[] temp = new int[lista2.length + 2];
+    System.arraycopy(lista2, 0, temp, 0, lista2.length);
+    temp[lista2.length] = xi;
+    temp[lista2.length + 1] = yi;
+    RESULT = temp;
+    :};
